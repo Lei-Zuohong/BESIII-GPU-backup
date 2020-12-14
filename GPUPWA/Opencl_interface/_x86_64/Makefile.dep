@@ -1,0 +1,80 @@
+Compiler.o: /home/leizh/gpu/GPUPWA/Opencl_interface/Compiler.cpp \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/KernelFile.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/DeviceInterface.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../Status.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/Stream.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float444.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h
+DeviceInterface.o: \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/DeviceInterface.cpp \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/DeviceInterface.h \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../Status.h
+KernelFile.o: /home/leizh/gpu/GPUPWA/Opencl_interface/KernelFile.cpp \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/KernelFile.h
+Makesumkernels.o: \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/Makesumkernels.cpp \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h
+opencltest.o: /home/leizh/gpu/GPUPWA/Opencl_interface/opencltest.cpp \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/KernelFile.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/DeviceInterface.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../Status.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/Stream.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float444.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h testkernels.h
+Stream.o: /home/leizh/gpu/GPUPWA/Opencl_interface/Stream.cpp \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/Stream.h \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float444.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/DeviceInterface.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../Status.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/vector_operators.h
+vector_operators.o: \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/vector_operators.cpp \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/vector_operators.h \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float444.h \
+ /home/leizh/gpu/GPUPWA/Opencl_interface/../float44.h
