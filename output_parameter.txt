@@ -1,0 +1,12 @@
+Parameter                   Value          Error          Lower Limit    Upper Limit    
+phasespace                = 0              -50            0              500            
+wave_rho770pi_mag         = 1              -1             0              0              
+wave_rho770pi_phase       = 0              -1             0              0              
+wave_rho1450pi_mag        = 0.799423       0.0693393      0              2              
+wave_rho1450pi_phase      = 9.53129        0.0932641      -12.5664       12.5664        
+wave_rho1700pi_mag        = 0.309043       0.0756801      0              2              
+wave_rho1700pi_phase      = 12.3122        0.703261       -12.5664       12.5664        
+wave_omega782pi_mag       = 0.102009       0.0130745      0              0.5            
+wave_omega782pi_phase     = -4.50051       0.123328       -12.5664       12.5664        
+wave_rho1690pi_mag        = 0.0043624      0.000993288    0              0.5            
+wave_rho1690pi_phase      = 1.43752        0.314933       -12.5664       12.5664        

@@ -1,200 +1,96 @@
-/*/// \file Propagators.br*/
 #pragma OPENCL EXTENSION cl_amd_fp64 : enable
-
-float fundecaymomentum(float mr2, float m1_2, float m2_2)
+/*##############################################################################
+# Used by Zuohong Lei
+##############################################################################*/
+// Common
+__constant float math_pi = 3.1415926f;
+__constant float mass_Pion = 0.13957f;
+float fundecaymomentum(float s12, float s1, float s2)
 {
-    float mr = sqrt(mr2);
-    float poly = mr2 * mr2 + m1_2 * m1_2 + m2_2 * m2_2 - 2 * m1_2 * mr2 - 2 * m2_2 * mr2 - 2 * m1_2 * m2_2;
-    float ret = sqrt(poly) / (2 * mr);
-    if (sqrt(m1_2) + sqrt(m2_2) > mr)
-        ret = 0.0f;
-    return ret;
+    float m12 = sqrt(s12);
+    float poly = s12 * s12 + s1 * s1 + s2 * s2 - 2 * s12 * s1 - 2 * s12 * s2 - 2 * s1 * s2;
+    float output = sqrt(poly) / (2.0f * m12);
+    if (sqrt(s1) + sqrt(s2) > m12)
+        output = 0.0f;
+    return output;
 }
-
-/* resolution */
-__kernel void kernelsumresolution(float tag, __global float2 *prop, float weight, __global out float2 *output)
+float fundecaymomentum2(float s12, float s1, float s2)
 {
-    uint i = get_global_id(0);
-    if (tag < 0)
+    float m12 = sqrt(s12);
+    float poly = s12 * s12 + s1 * s1 + s2 * s2 - 2 * s12 * s1 - 2 * s12 * s2 - 2 * s1 * s2;
+    float output = poly / (4.0f * s12);
+    if (sqrt(s1) + sqrt(s2) > m12)
+        output = 0.0f;
+    return output;
+}
+// GS model
+float GS_h(float m, float q)
+{
+    float h = 2.0f / math_pi * q / m * log((m + 2.0f * q) / (2.0f * mass_Pion));
+    return h;
+}
+float GS_dh(float m0, float q0)
+{
+    float dh = GS_h(m0, q0) * (1.0f / (8.0f * q0 * q0) - 1.0f / (2.0f * m0 * m0)) + 1.0f / (2.0f * math_pi * m0 * m0);
+    return dh;
+}
+float GS_f(float m0, float sx, float q0, float q)
+{
+    float m = sqrt(sx);
+    float f = m0 * m0 / (q0 * q0 * q0) * (q * q * (GS_h(m, q) - GS_h(m0, q0)) + (m0 * m0 - sx) * q0 * q0 * GS_dh(m0, q0));
+    return f;
+}
+float GS_d(float m0, float q0)
+{
+    float d = 3.0f / math_pi * mass_Pion * mass_Pion / (q0 * q0) * log((m0 + 2.0f * q0) / (2.0f * mass_Pion)) + m0 / (2.0f * math_pi * q0) - (mass_Pion * mass_Pion * m0) / (math_pi * q0 * q0 * q0);
+    return d;
+}
+float GS_wid(float mass, float sa, float sb, float sc, float r, int l)
+{
+    float widm = 1.0f;
+    float sa0 = mass * mass;
+    float m = sqrt(sa);
+    float q = fundecaymomentum2(sa, sb, sc);
+    float q0 = fundecaymomentum2(sa0, sb, sc);
+    float z = q * r * r;
+    float z0 = q0 * r * r;
+    float F = 0.0f;
+    if (l == 0)
+        F = 1.0f;
+    if (l == 1)
+        F = sqrt((1.0f + z0) / (1.0f + z));
+    if (l == 2)
+        F = sqrt((9.0f + 3.0f * z0 + z0 * z0) / (9.0f + 3.0f * z + z * z));
+    float t = sqrt(q / q0);
+    uint i = 0;
+    for (i = 0; i < (2 * l + 1); i++)
     {
-        output[i].x = 0;
-        output[i].y = 0;
+        widm *= t;
     }
-
-    output[i].x += weight * prop[i].x;
-    output[i].y += weight * prop[i].y;
+    widm *= (mass / m * F * F);
+    return widm;
 }
-
-__kernel void kernelcontractresolution(float tag, __global float2 *prop1, __global float2 *prop2, float weight, __global out float2 *output)
+__kernel void kernelGS(__global float *mx2in, float mr, float wr, float m1_2, float m2_2, float r, int l, __global out float2 *output)
 {
+    //
     uint i = get_global_id(0);
-    if (tag < 0)
-    {
-        output[i].x = 0;
-        output[i].y = 0;
-    }
-
-    output[i].x += weight * (prop1[i].x * prop2[i].x + prop1[i].y * prop2[i].y);
-    output[i].y += weight * (-prop1[i].x * prop2[i].y + prop1[i].y * prop2[i].x);
+    float s12 = mx2in[i];
+    float sr = mr * mr;
+    float s1 = m1_2;
+    float s2 = m2_2;
+    //
+    float ps = fundecaymomentum(s12, m1_2, m2_2);
+    float pr = fundecaymomentum(sr, m1_2, m2_2);
+    //
+    float numer = 1.0f + GS_d(mr, pr) * wr / mr;
+    float denom_real = sr - s12 + wr * GS_f(mr, s12, pr, ps);
+    float denom_imag = mr * wr * GS_wid(mr, s12, m1_2, m2_2, r, l);
+    //
+    float denom = denom_real * denom_real + denom_imag * denom_imag;
+    output[i].x = denom_real * numer / denom;
+    output[i].y = denom_imag * numer / denom;
 }
-
-/* Breit-Wigner propagator */
-__kernel void kernelbreitwignerRes(__global float *mx2in, float shift, float mr, float mr2, float wr, __global out float2 *output)
-{
-    uint i = get_global_id(0);
-    float mx2 = mx2in[i];
-    float mx = sqrt(mx2) + shift;
-
-    float diff = mr2 - mx * mx;
-    float denom = diff * diff + wr * wr * mr2;
-    /*      float denom = diff*diff + wr*wr*mx2;*/
-    if (wr < 0)
-    {
-        output[i].x = 1 / sqrt(denom);
-        output[i].y = 0;
-    }
-    else if (wr < 10)
-    {
-        output[i].x = diff / denom;
-        output[i].y = wr * mr / denom;
-    }
-    else
-    { /* phase space */
-        output[i].x = 1;
-        output[i].y = 0;
-    }
-}
-
-__kernel void kernelmassdependentbreitwigner1Reskk(__global float *mx2in, float shift, float mr, float mr2, float wr, __global out float2 *output)
-{
-    uint i = get_global_id(0);
-    float m1_2 = 0.493677 * 0.493677;
-    float m2_2 = 0.493677 * 0.493677;
-    float mx2 = mx2in[i];
-    float mx = sqrt(mx2) + shift;
-    float diff = mr2 - mx * mx;
-    float pmr = fundecaymomentum(mr2, m1_2, m2_2);
-    float p_s = fundecaymomentum(mx2, m1_2, m2_2);
-    float ppart = (p_s / pmr); /* Momentum dependent part */
-    float ppart3 = ppart * ppart * ppart;
-    /*	float diff = mr2-mx2;*/
-    /*	float mx   = sqrt(mx2);  square root of s*/
-    float ws = wr * (mr2 / mx2) * ppart3; /*mass dependent width */
-                                          /*	float denom = diff*diff + mx2*ws*ws;  common denominator*/
-
-    float denom = diff * diff + wr * wr * mr2;
-    output[i].x = diff / denom;    /* real part*/
-    output[i].y = mx * ws / denom; /* imaginary part*/
-}
-
-/* Breit-Wigner propagator */
-__kernel void kernelbreitwigner(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
-{
-    uint i = get_global_id(0);
-    float mx2 = mx2in[i];
-
-    float diff = mr2 - mx2;
-    float denom = diff * diff + wr * wr * mr2;
-    if (wr < 0)
-    {
-        output[i].x = 1 / sqrt(denom);
-        output[i].y = 0;
-    }
-    else if (wr < 10)
-    {
-        output[i].x = diff / denom;
-        output[i].y = wr * mr / denom;
-    }
-    else
-    { /* phase space */
-        output[i].x = 1;
-        output[i].y = 0;
-    }
-}
-
-/* gaussian */
-/* the phase information is dropped */
-__kernel void kernelgaussian(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
-{
-    uint i = get_global_id(0);
-    float mx = sqrt(mx2in[i]);
-    float diff = mx - mr;
-    float denom = 2 * wr * wr;
-
-    output[i].x = exp(-diff * diff / denom / 2);
-    output[i].y = 0;
-}
-
-/* f(x, m, w) = 1/(x*x - m*m - imw)
-   g(x, m, w) = 1/(m*m - x*x - imw)
-   -> g(x, m, w) = -f(x, m, -w)
-   -> Dg(x, m, w)/Dm = -Df(x, m, -w)/Dm    Equation(a)
-   -> Dg(x, m, w)/Dw = Df(x, m, w)/Dw      Equation(b) */
-/* Breit-Wigner propagator: derivative wrt resonance mass */
-__kernel void kerneldbreitwignerdmass(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
-{
-    uint i = get_global_id(0);
-    wr *= -1; /* w -> -w */
-    float mx2 = mx2in[i];
-    float mx4 = mx2 * mx2;
-    float mr4 = mr2 * mr2;
-    float gr2 = wr * wr;
-    float denomcommon = mx4 - 2.0f * mx2 * mr2 + mr4;
-    float denom = denomcommon + mr2 * gr2;
-    float denom2 = denom * denom;
-
-    /* change sign according to Eq(a) */
-    output[i].x = -1.0f * 2.0f * mr * (denomcommon - mx2 * gr2) / denom2;
-    output[i].y = -1.0f * wr * (mx4 - 2.0f * mx2 * mr2 - 3.0f * mr4 - gr2 * mr2) / denom2;
-}
-
-/* Breit-Wigner propagator: derivative wrt resonance width */
-__kernel void kerneldbreitwignerdwidth(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
-{
-    uint i = get_global_id(0);
-    wr *= -1; /* w -> -w */
-    float mx2 = mx2in[i];
-    float mx4 = mx2 * mx2;
-    float mr4 = mr2 * mr2;
-    float gr2 = wr * wr;
-    float denomcommon = mx4 - 2.0f * mx2 * mr2 + mr4;
-    float denom = denomcommon + mr2 * gr2;
-    float denom2 = denom * denom;
-
-    /* according to Eq(b) */
-    output[i].x = -2.0f * (mx2 - mr2) * wr * mr2 / denom2;
-    output[i].y = mr * (denomcommon - mr2 * gr2) / denom2;
-}
-
-/* Breit-Wigner propagator: derivative of magnitude squared wrt to mass */
-__kernel void kerneldbw2dmass(__global float *mx2in, float mr, float mr2, float wr, __global out float *output)
-{
-    uint i = get_global_id(0);
-    float mx2 = mx2in[i];
-    float mx4 = mx2 * mx2;
-    float mr4 = mr2 * mr2;
-    float wr2 = wr * wr;
-
-    float denom = mx4 + 2.0f * mx2 * mr2 + mr4 + wr2 * mr2;
-
-    output[i] = 2.0f * mr * (2.0f * mx2 - 2.0f * mr2 - wr2) / (denom * denom);
-}
-
-/* Breit-Wigner propagator: derivative of magnitude squared wrt to width */
-__kernel void kerneldbw2dwidth(__global float *mx2in, float mr, float mr2, float wr, __global out float *output)
-{
-    uint i = get_global_id(0);
-    float mx2 = mx2in[i];
-    float mx4 = mx2 * mx2;
-    float mr4 = mr2 * mr2;
-    float wr2 = wr * wr;
-
-    float denom = mx4 + 2.0f * mx2 * mr2 + mr4 + wr2 * mr2;
-
-    output[i] = -2.0f * wr * mr2 / (denom * denom);
-}
-
-/* Mass dependent Breit-Wigner propagator - angular momentum 0 */
+// BW - massdependent model
 __kernel void kernelmassdependentbreitwigner0(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -207,8 +103,6 @@ __kernel void kernelmassdependentbreitwigner0(__global float *mx2in, float mr, f
     output[i].x = diff / denom;                /* real part*/
     output[i].y = mx * ws / denom;             /* imaginary part*/
 }
-
-/* Mass dependent Breit-Wigner propagator - angular momentum 1*/
 __kernel void kernelmassdependentbreitwigner1(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -223,8 +117,6 @@ __kernel void kernelmassdependentbreitwigner1(__global float *mx2in, float mr, f
     output[i].x = diff / denom;                /* real part*/
     output[i].y = mx * ws / denom;             /* imaginary part*/
 }
-
-/* Mass dependent Breit-Wigner propagator - angular momentum 2 */
 __kernel void kernelmassdependentbreitwigner2(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -240,8 +132,6 @@ __kernel void kernelmassdependentbreitwigner2(__global float *mx2in, float mr, f
     output[i].x = diff / denom;                /* real part*/
     output[i].y = mx * ws / denom;             /* imaginary part*/
 }
-
-/*  Mass dependent Breit-Wigner propagator - angular momentum 3   */
 __kernel void kernelmassdependentbreitwigner3(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -257,8 +147,6 @@ __kernel void kernelmassdependentbreitwigner3(__global float *mx2in, float mr, f
     output[i].x = diff / denom;                /* real part */
     output[i].y = mx * ws / denom;             /* imaginary part */
 }
-
-/* Mass dependent Breit-Wigner propagator - angular momentum 4  */
 __kernel void kernelmassdependentbreitwigner4(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -275,8 +163,6 @@ __kernel void kernelmassdependentbreitwigner4(__global float *mx2in, float mr, f
     output[i].x = diff / denom;                /* real part */
     output[i].y = mx * ws / denom;             /* imaginary part */
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator - angular momentum 0 */
 __kernel void kernelmassdependentbreitwigner0dwidth(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -293,8 +179,6 @@ __kernel void kernelmassdependentbreitwigner0dwidth(__global float *mx2in, float
     output[i].x = realnom / denom2; /* real part */
     output[i].y = imagnom / denom2; /* imaginary part */
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator - angular momentum 1 */
 __kernel void kernelmassdependentbreitwigner1dwidth(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -313,8 +197,6 @@ __kernel void kernelmassdependentbreitwigner1dwidth(__global float *mx2in, float
     output[i].x = realnom / denom2; /* real part */
     output[i].y = imagnom / denom2; /* imaginary part */
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator - angular momentum 2 */
 __kernel void kernelmassdependentbreitwigner2dwidth(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -334,8 +216,6 @@ __kernel void kernelmassdependentbreitwigner2dwidth(__global float *mx2in, float
     output[i].x = realnom / denom2; /* real part */
     output[i].y = imagnom / denom2; /* imaginary part */
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator - angular momentum 3 */
 __kernel void kernelmassdependentbreitwigner3dwidth(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -355,8 +235,6 @@ __kernel void kernelmassdependentbreitwigner3dwidth(__global float *mx2in, float
     output[i].x = realnom / denom2; /* real part */
     output[i].y = imagnom / denom2; /* imaginary part */
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator - angular momentum 4 */
 __kernel void kernelmassdependentbreitwigner4dwidth(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -376,8 +254,6 @@ __kernel void kernelmassdependentbreitwigner4dwidth(__global float *mx2in, float
     output[i].x = realnom / denom2; /* real part */
     output[i].y = imagnom / denom2; /* imaginary part */
 }
-
-/* Derivative wrt. mass of mass dependent Breit-Wigner propagator - angular momentum 0 */
 __kernel void kernelmassdependentbreitwigner0dmass(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -397,8 +273,6 @@ __kernel void kernelmassdependentbreitwigner0dmass(__global float *mx2in, float 
     output[i].x = (nomreal * denreal + nomimag * denimag) / denom;
     output[i].y = (nomimag * denreal - nomreal * denimag) / denom;
 }
-
-/* Derivative wrt. mass of mass dependent Breit-Wigner propagator - angular momentum 1 */
 __kernel void kernelmassdependentbreitwigner1dmass(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -421,8 +295,6 @@ __kernel void kernelmassdependentbreitwigner1dmass(__global float *mx2in, float 
     output[i].x = (nomreal * denreal + nomimag * denimag) / denom;
     output[i].y = (nomimag * denreal - nomreal * denimag) / denom;
 }
-
-/* Derivative wrt. mass of mass dependent Breit-Wigner propagator - angular momentum 2 */
 __kernel void kernelmassdependentbreitwigner2dmass(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -448,8 +320,6 @@ __kernel void kernelmassdependentbreitwigner2dmass(__global float *mx2in, float 
     output[i].x = (nomreal * denreal + nomimag * denimag) / denom;
     output[i].y = (nomimag * denreal - nomreal * denimag) / denom;
 }
-
-/* Derivative wrt. mass of mass dependent Breit-Wigner propagator - angular momentum 3 */
 __kernel void kernelmassdependentbreitwigner3dmass(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -477,8 +347,6 @@ __kernel void kernelmassdependentbreitwigner3dmass(__global float *mx2in, float 
     output[i].x = (nomreal * denreal + nomimag * denimag) / denom;
     output[i].y = (nomimag * denreal - nomreal * denimag) / denom;
 }
-
-/* Derivative wrt. mass of mass dependent Breit-Wigner propagator - angular momentum 4 */
 __kernel void kernelmassdependentbreitwigner4dmass(__global float *mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -508,8 +376,6 @@ __kernel void kernelmassdependentbreitwigner4dmass(__global float *mx2in, float 
     output[i].x = (nomreal * denreal + nomimag * denimag) / denom;
     output[i].y = (nomimag * denreal - nomreal * denimag) / denom;
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator magnitude squared - angular momentum 0 */
 __kernel void kerneldmassdependentbreitwigner20dwidth(__global float *mx2in, float mr, float mr2, float g, float pmr, float m1_2, float m2_2, __global out float *output)
 {
     uint i = get_global_id(0);
@@ -528,8 +394,6 @@ __kernel void kerneldmassdependentbreitwigner20dwidth(__global float *mx2in, flo
     float t30 = t29 * t29;
     output[i] = -8.0f * t25 * ps2 * t11 * mr6 * g * mx2 / t30;
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator magnitude squared - angular momentum 1 */
 __kernel void kerneldmassdependentbreitwigner21dwidth(__global float *mx2in, float mr, float mr2, float g, float pmr, float m1_2, float m2_2, __global out float *output)
 {
     uint i = get_global_id(0);
@@ -553,8 +417,6 @@ __kernel void kerneldmassdependentbreitwigner21dwidth(__global float *mx2in, flo
     float t35 = t34 * t34;
     output[i] = -128.0f * t30 * ps6 * t12 * mr10 * g * mx2 / t35;
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator magnitude squared - angular momentum 2 */
 __kernel void kerneldmassdependentbreitwigner22dwidth(__global float *mx2in, float mr, float mr2, float g, float pmr, float m1_2, float m2_2, __global out float *output)
 {
     uint i = get_global_id(0);
@@ -580,8 +442,6 @@ __kernel void kerneldmassdependentbreitwigner22dwidth(__global float *mx2in, flo
     float t38 = t37 * t37;
     output[i] = -2048.0f * t33 * ps10 * t13 * mr14 * g * mx2 / t38;
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator magnitude squared - angular momentum 3 */
 __kernel void kerneldmassdependentbreitwigner23dwidth(__global float *mx2in, float mr, float mr2, float g, float pmr, float m1_2, float m2_2, __global out float *output)
 {
     uint i = get_global_id(0);
@@ -608,8 +468,6 @@ __kernel void kerneldmassdependentbreitwigner23dwidth(__global float *mx2in, flo
     float t40 = t39 * t39;
     output[i] = -32768.0f * t35 * ps14 * t13 * mr18 * g * mx2 / t40;
 }
-
-/* Derivative wrt. width of mass dependent Breit-Wigner propagator magnitude squared - angular momentum 4 */
 __kernel void kerneldmassdependentbreitwigner24dwidth(__global float *mx2in, float mr, float mr2, float g, float pmr, float m1_2, float m2_2, __global out float *output)
 {
     uint i = get_global_id(0);
@@ -639,6 +497,182 @@ __kernel void kerneldmassdependentbreitwigner24dwidth(__global float *mx2in, flo
     output[i] = -524288.0f * t36 * ps18 * t14 * mr22 * g * mx2 / t41;
 }
 
+/*##############################################################################
+# Other function
+##############################################################################*/
+/* resolution */
+__kernel void kernelsumresolution(float tag, __global float2 *prop, float weight, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    if (tag < 0)
+    {
+        output[i].x = 0;
+        output[i].y = 0;
+    }
+
+    output[i].x += weight * prop[i].x;
+    output[i].y += weight * prop[i].y;
+}
+__kernel void kernelcontractresolution(float tag, __global float2 *prop1, __global float2 *prop2, float weight, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    if (tag < 0)
+    {
+        output[i].x = 0;
+        output[i].y = 0;
+    }
+
+    output[i].x += weight * (prop1[i].x * prop2[i].x + prop1[i].y * prop2[i].y);
+    output[i].y += weight * (-prop1[i].x * prop2[i].y + prop1[i].y * prop2[i].x);
+}
+/* Breit-Wigner propagator */
+__kernel void kernelbreitwignerRes(__global float *mx2in, float shift, float mr, float mr2, float wr, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    float mx2 = mx2in[i];
+    float mx = sqrt(mx2) + shift;
+
+    float diff = mr2 - mx * mx;
+    float denom = diff * diff + wr * wr * mr2;
+    /*      float denom = diff*diff + wr*wr*mx2;*/
+    if (wr < 0)
+    {
+        output[i].x = 1 / sqrt(denom);
+        output[i].y = 0;
+    }
+    else if (wr < 10)
+    {
+        output[i].x = diff / denom;
+        output[i].y = wr * mr / denom;
+    }
+    else
+    { /* phase space */
+        output[i].x = 1;
+        output[i].y = 0;
+    }
+}
+__kernel void kernelmassdependentbreitwigner1Reskk(__global float *mx2in, float shift, float mr, float mr2, float wr, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    float m1_2 = 0.493677 * 0.493677;
+    float m2_2 = 0.493677 * 0.493677;
+    float mx2 = mx2in[i];
+    float mx = sqrt(mx2) + shift;
+    float diff = mr2 - mx * mx;
+    float pmr = fundecaymomentum(mr2, m1_2, m2_2);
+    float p_s = fundecaymomentum(mx2, m1_2, m2_2);
+    float ppart = (p_s / pmr); /* Momentum dependent part */
+    float ppart3 = ppart * ppart * ppart;
+    /*	float diff = mr2-mx2;*/
+    /*	float mx   = sqrt(mx2);  square root of s*/
+    float ws = wr * (mr2 / mx2) * ppart3; /*mass dependent width */
+                                          /*	float denom = diff*diff + mx2*ws*ws;  common denominator*/
+
+    float denom = diff * diff + wr * wr * mr2;
+    output[i].x = diff / denom;    /* real part*/
+    output[i].y = mx * ws / denom; /* imaginary part*/
+}
+/* Breit-Wigner propagator */
+__kernel void kernelbreitwigner(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    float mx2 = mx2in[i];
+
+    float diff = mr2 - mx2;
+    float denom = diff * diff + wr * wr * mr2;
+    if (wr < 0)
+    {
+        output[i].x = 1 / sqrt(denom);
+        output[i].y = 0;
+    }
+    else if (wr < 10)
+    {
+        output[i].x = diff / denom;
+        output[i].y = wr * mr / denom;
+    }
+    else
+    { /* phase space */
+        output[i].x = 1;
+        output[i].y = 0;
+    }
+}
+/* gaussian */
+/* the phase information is dropped */
+__kernel void kernelgaussian(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    float mx = sqrt(mx2in[i]);
+    float diff = mx - mr;
+    float denom = 2 * wr * wr;
+
+    output[i].x = exp(-diff * diff / denom / 2);
+    output[i].y = 0;
+}
+/* f(x, m, w) = 1/(x*x - m*m - imw)
+   g(x, m, w) = 1/(m*m - x*x - imw)
+   -> g(x, m, w) = -f(x, m, -w)
+   -> Dg(x, m, w)/Dm = -Df(x, m, -w)/Dm    Equation(a)
+   -> Dg(x, m, w)/Dw = Df(x, m, w)/Dw      Equation(b) */
+/* Breit-Wigner propagator: derivative wrt resonance mass */
+__kernel void kerneldbreitwignerdmass(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    wr *= -1; /* w -> -w */
+    float mx2 = mx2in[i];
+    float mx4 = mx2 * mx2;
+    float mr4 = mr2 * mr2;
+    float gr2 = wr * wr;
+    float denomcommon = mx4 - 2.0f * mx2 * mr2 + mr4;
+    float denom = denomcommon + mr2 * gr2;
+    float denom2 = denom * denom;
+
+    /* change sign according to Eq(a) */
+    output[i].x = -1.0f * 2.0f * mr * (denomcommon - mx2 * gr2) / denom2;
+    output[i].y = -1.0f * wr * (mx4 - 2.0f * mx2 * mr2 - 3.0f * mr4 - gr2 * mr2) / denom2;
+}
+/* Breit-Wigner propagator: derivative wrt resonance width */
+__kernel void kerneldbreitwignerdwidth(__global float *mx2in, float mr, float mr2, float wr, __global out float2 *output)
+{
+    uint i = get_global_id(0);
+    wr *= -1; /* w -> -w */
+    float mx2 = mx2in[i];
+    float mx4 = mx2 * mx2;
+    float mr4 = mr2 * mr2;
+    float gr2 = wr * wr;
+    float denomcommon = mx4 - 2.0f * mx2 * mr2 + mr4;
+    float denom = denomcommon + mr2 * gr2;
+    float denom2 = denom * denom;
+
+    /* according to Eq(b) */
+    output[i].x = -2.0f * (mx2 - mr2) * wr * mr2 / denom2;
+    output[i].y = mr * (denomcommon - mr2 * gr2) / denom2;
+}
+/* Breit-Wigner propagator: derivative of magnitude squared wrt to mass */
+__kernel void kerneldbw2dmass(__global float *mx2in, float mr, float mr2, float wr, __global out float *output)
+{
+    uint i = get_global_id(0);
+    float mx2 = mx2in[i];
+    float mx4 = mx2 * mx2;
+    float mr4 = mr2 * mr2;
+    float wr2 = wr * wr;
+
+    float denom = mx4 + 2.0f * mx2 * mr2 + mr4 + wr2 * mr2;
+
+    output[i] = 2.0f * mr * (2.0f * mx2 - 2.0f * mr2 - wr2) / (denom * denom);
+}
+/* Breit-Wigner propagator: derivative of magnitude squared wrt to width */
+__kernel void kerneldbw2dwidth(__global float *mx2in, float mr, float mr2, float wr, __global out float *output)
+{
+    uint i = get_global_id(0);
+    float mx2 = mx2in[i];
+    float mx4 = mx2 * mx2;
+    float mr4 = mr2 * mr2;
+    float wr2 = wr * wr;
+
+    float denom = mx4 + 2.0f * mx2 * mr2 + mr4 + wr2 * mr2;
+
+    output[i] = -2.0f * wr * mr2 / (denom * denom);
+}
 /* flatte for f980 and a980 */
 float2 irho(float mr2, float m1_2, float m2_2)
 {
@@ -657,7 +691,6 @@ float2 irho(float mr2, float m1_2, float m2_2)
     }
     return ret;
 }
-
 /* two channels */
 __kernel void kernelflatte2(__global float *mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, __global out float2 *output)
 {
@@ -676,7 +709,6 @@ __kernel void kernelflatte2(__global float *mx2in, float mr, float mr2, float g1
     output[i].x = diff / denom; /* real part*/
     output[i].y = ws / denom;   /* imaginary part*/
 }
-
 /* three channels */
 __kernel void kernelflatte3(__global float *mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, float g3, float m3a, float m3b, __global out float2 *output)
 {
@@ -697,7 +729,6 @@ __kernel void kernelflatte3(__global float *mx2in, float mr, float mr2, float g1
     output[i].x = diff / denom; /* real part*/
     output[i].y = ws / denom;   /* imaginary part*/
 }
-
 /* four channels */
 __kernel void kernelflatte4(__global float *mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, float g3, float m3a, float m3b, float g4, float m4a, float m4b, __global out float2 *output)
 {
@@ -733,7 +764,6 @@ float rho4pi(float s)
     else
         return sqrt(tmp) / (1.0f + exp(9.8f - 3.5f * s));
 }
-
 float rho2pi(float s)
 {
     //float mpi=0.13957018;
@@ -743,7 +773,6 @@ float rho2pi(float s)
     else
         return sqrt(1.0f - 4.0f * mpi * mpi / s);
 }
-
 __kernel void kernelsigma(__global float *mx2in, float mr, float gf, __global out float2 *output)
 {
     uint i = get_global_id(0);
@@ -766,95 +795,8 @@ __kernel void kernelsigma(__global float *mx2in, float mr, float gf, __global ou
 /* end for sigma(500) */
 
 /*for rho */
-
 /* for K-matrix as in partial wave analysis in K-matrix formalism by S.U.Chung and e.t. */
 /*break up momentum (square)*/
-
-float fundecaymomentum2(float mr2, float m1_2, float m2_2)
-{
-    float mr = sqrt(mr2);
-    float poly = mr2 * mr2 + m1_2 * m1_2 + m2_2 * m2_2 - 2 * m1_2 * mr2 - 2 * m2_2 * mr2 - 2 * m1_2 * m2_2;
-    float ret = poly / (4.0f * mr2);
-    if (sqrt(m1_2) + sqrt(m2_2) > mr)
-        ret = 0.0f;
-    return ret;
-}
-
-/* GS propagator */
-__constant float math_pi = 3.1415926f;
-__constant float mass_Pion = 0.13957f;
-float h(float m, float q)
-{
-    float h = 2.0f / math_pi * q / m * log((m + 2.0f * q) / (2.0f * mass_Pion));
-    return h;
-}
-
-float dh(float m0, float q0)
-{
-    float dh = h(m0, q0) * (1.0f / (8.0f * q0 * q0) - 1.0f / (2.0f * m0 * m0)) + 1.0f / (2.0f * math_pi * m0 * m0);
-    return dh;
-}
-
-float f(float m0, float sx, float q0, float q)
-{
-    float m = sqrt(sx);
-    float f = m0 * m0 / (q0 * q0 * q0) * (q * q * (h(m, q) - h(m0, q0)) + (m0 * m0 - sx) * q0 * q0 * dh(m0, q0));
-    return f;
-}
-
-float d(float m0, float q0)
-{
-    float d = 3.0f / math_pi * mass_Pion * mass_Pion / (q0 * q0) * log((m0 + 2.0f * q0) / (2.0f * mass_Pion)) + m0 / (2.0f * math_pi * q0) - (mass_Pion * mass_Pion * m0) / (math_pi * q0 * q0 * q0);
-    return d;
-}
-
-float wid(float mass, float sa, float sb, float sc, float r, int l)
-{
-    float widm = 1.0f;
-    float sa0 = mass * mass;
-    float m = sqrt(sa);
-    float q = fundecaymomentum2(sa, sb, sc);
-    float q0 = fundecaymomentum2(sa0, sb, sc);
-    float z = q * r * r;
-    float z0 = q0 * r * r;
-    float F = 0.0f;
-    if (l == 0)
-        F = 1.0f;
-    if (l == 1)
-        F = sqrt((1.0f + z0) / (1.0f + z));
-    if (l == 2)
-        F = sqrt((9.0f + 3.0f * z0 + z0 * z0) / (9.0f + 3.0f * z + z * z));
-    float t = sqrt(q / q0);
-    //printf("sa0 = %f, sb = %f, sc = %f, q = %f, q0 = %0.15f, qq0 = %f, t = %f \n",sa0,sb,sc,q,q0,q/q0,t);
-    uint i = 0;
-    for (i = 0; i < (2 * l + 1); i++)
-    {
-        widm *= t;
-    }
-    widm *= (mass / m * F * F);
-    return widm;
-}
-
-/* for rho0, use GS, rho0->pi+ pi-, only angular momentum 1*/
-__kernel void kernelGS(__global float *mx2in, float mr, float wr, float m1_2, float m2_2, float r, int l, __global out float2 *output)
-{
-    //__kernel void kernelGS(__global float * mx2in, float mr, float wr, __global float * m1_2in, __global float * m2_2in, float r, int l, __global out float2 * output){
-    uint i = get_global_id(0);
-    float mx2 = mx2in[i];
-    //float m1_2 = m1_2in[i];
-    //float m2_2 = m2_2in[i];
-    float mr2 = mr * mr;
-    float q = fundecaymomentum(mx2, m1_2, m2_2);
-    float q0 = fundecaymomentum(mr2, m1_2, m2_2);
-    float numer = 1.0f + d(mr, q0) * wr / mr;
-    float denom_real = mr2 - mx2 + wr * f(mr, mx2, q0, q);
-    float denom_imag = mr * wr * wid(mr, mx2, m1_2, m2_2, r, l); //real-i*imag;
-
-    float denom = denom_real * denom_real + denom_imag * denom_imag;
-    output[i].x = denom_real * numer / denom;
-    output[i].y = denom_imag * numer / denom;
-}
-
 /*Blatt-Weisskopf barrier factors */
 float f0(float q2)
 {
@@ -1007,7 +949,6 @@ float2 F_n_scalar(int n, float m_2, float *mr, float *wr, float *x, float *y, fl
     f.y = p.y + p.x * k;
     return f;
 }
-
 __kernel void kernelfnscalarzou(__global float *mx2in, uint n, __global float4 *par, float c, float cs, float2 d, float2 ds, float m1_2, float m2_2, __global out float2 *output)
 {
     uint index = get_global_id(0);
@@ -1040,7 +981,6 @@ __kernel void kernelfnscalarzou(__global float *mx2in, uint n, __global float4 *
     /* output[index].x=(k)/dom; */
     /* output[index].y= (k*rho_*k)/dom; */
 }
-
 __kernel void kernelfnscalarcm2(__global float *mx2in, uint n, __global float4 *par, float c, float cs, float2 d, float2 ds, float m1_2, float m2_2, __global out float2 *output)
 {
     uint index = get_global_id(0);
@@ -1064,7 +1004,6 @@ __kernel void kernelfnscalarcm2(__global float *mx2in, uint n, __global float4 *
     output[index].x = -(b1 * g1 * g1 * g1) / (tmp1 * tmp1 * tmp3) - (b2 * g2 * g1 * g1) / (tmp1 * tmp2 * tmp3) + (a1 * g1) / (tmp1 * tmp3) - (b1 * g2 * g2 * g1) / (tmp1 * tmp2 * tmp3) + (a2 * g2) / (tmp2 * tmp3) - (b2 * g2 * g2 * g2) / (tmp2 * tmp2 * tmp3);
     output[index].y = (a1 * g1 * g1 * g1) / (tmp1 * tmp1 * tmp3) + (a2 * g2 * g1) / (tmp1 * tmp2 * tmp3) + (b1 * g1) / (tmp1 * tmp3) + a1 * g2 * g2 * g1 / (tmp1 * tmp2 * tmp3) + (b2 * g2) / (tmp2 * tmp3) + (a2 * g2 * g2 * g2) / (tmp2 * tmp2 * tmp3);
 }
-
 __kernel void kernelfnscalarcm(__global float *mx2in, uint n, __global float4 *par, float c, float cs, float2 d, float2 ds, float m1_2, float m2_2, __global out float2 *output)
 {
     uint index = get_global_id(0);
@@ -1100,7 +1039,6 @@ __kernel void kernelfnscalarcm(__global float *mx2in, uint n, __global float4 *p
     /* output[index].x=(k)/dom_; */
     /* output[index].y= (k*rho0*k)/dom_;*/
 }
-
 __kernel void kernelfnscalarchung(__global float *mx2in, uint n, __global float4 *par, float c, float cs, float2 d, float2 ds, float m1_2, float m2_2, __global out float2 *output)
 {
     uint index = get_global_id(0);
@@ -1142,7 +1080,6 @@ __kernel void kernelfnscalarchung(__global float *mx2in, uint n, __global float4
     /*output[index].x=tbwx;*/
     /*output[index].y=tbwy;*/
 }
-
 /* dispersive correction 2016-03-25 */
 //__const float dispersive_correction_EtaPi[2701] =
 float dispersive_correction_EtaPi(int i)
@@ -1639,7 +1576,6 @@ float dispersive_correction_EtaPi(int i)
             -0.0243166, -0.0242991, -0.0242816};
     return dispersive_correction_EtaPi[i];
 };
-
 //__const float dispersive_correction_KK[2701] =
 float dispersive_correction_KK(int i)
 {
@@ -2131,7 +2067,6 @@ float dispersive_correction_KK(int i)
             -0.0212054, -0.0211892, -0.021173, -0.0211568, -0.0211406};
     return dispersive_correction_KK[i];
 };
-
 //__const float dispersive_correction_KsKs[2701] =
 float dispersive_correction_KsKs(int i)
 {
@@ -2623,7 +2558,6 @@ float dispersive_correction_KsKs(int i)
             -0.0211103, -0.0210942};
     return dispersive_correction_KsKs[i];
 };
-
 //__const float dispersive_correction_EtapPi[2701] =
 float dispersive_correction_EtapPi(int i)
 {
@@ -3109,19 +3043,16 @@ float dispersive_correction_EtapPi(int i)
             -0.0239505, -0.0239309, -0.0239113, -0.0238918};
     return dispersive_correction_EtapPi[i];
 };
-
 int get_id(float x)
 {
     int id = 1000 * x - 700;
     return (x < 0.7 || x > 3.4) ? (x < 0.7 ? 0 : 2700) : id;
 }
-
 float get_ratio(float x)
 {
     int id = get_id(x);
     return (x < 0.7 || x > 3.4) ? 1 : 701 + id - 1000 * x;
 }
-
 float rho(float mr2, float m1_2, float m2_2)
 {
     float mr = sqrt(mr2);
@@ -3137,7 +3068,6 @@ float rho(float mr2, float m1_2, float m2_2)
     }
     return ret;
 }
-
 /* four channels */
 __kernel void kernel_a0980(__global float *mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, float g3, float m3a, float m3b, float g4, float m4a, float m4b, __global out float2 *output)
 {
@@ -3182,7 +3112,6 @@ __kernel void kernel_a0980(__global float *mx2in, float mr, float mr2, float g1,
     output[i].x = diff / denom; /* real part*/
     output[i].y = ws / denom;   /* imaginary part*/
 }
-
 /*For summing the BW in partial wave*/
 /*constant width BW*/
 float2 breitwigner(float mx2in, float mr, float mr2, float wr)
@@ -3209,7 +3138,6 @@ float2 breitwigner(float mx2in, float mr, float mr2, float wr)
     }
     return output;
 }
-
 /*sigma*/
 float2 Pr_sigma(float mx2in)
 {
@@ -3230,7 +3158,6 @@ float2 Pr_sigma(float mx2in)
     output.y = ws / denom;
     return output;
 }
-
 /*f0980*/
 float2 Pr_f0980(float mx2in)
 {
@@ -3264,7 +3191,6 @@ float2 Pr_f0980(float mx2in)
     output.y = ws / denom;   /* imaginary part*/
     return output;
 }
-
 /* a0980 four channels */
 float2 Pr_a0980(float mx2in)
 {
@@ -3325,7 +3251,6 @@ float2 Pr_a0980(float mx2in)
     output.y = ws / denom;   /* imaginary part*/
     return output;
 }
-
 __kernel void kernelsumBW(__global float *mx123in, __global float *mx2in, uint n, __global float4 *par, float m1_2, float m2_2, __global out float2 *output)
 {
     uint index = get_global_id(0);
@@ -3371,7 +3296,6 @@ __kernel void kernelsumBW(__global float *mx123in, __global float *mx2in, uint n
     output[index].x = res_re1;
     output[index].y = res_im1;
 }
-
 /* Breit-Wigner + poly. part propagator */
 __kernel void kernelComBW(__global float *mx2in, __global float4 *par, __global out float2 *output)
 {

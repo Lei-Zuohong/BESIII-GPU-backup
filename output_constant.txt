@@ -1,0 +1,11 @@
+Parameter                   Value          Error          Lower Limit    Upper Limit    
+rho770_mass               = 0.775185       -1             0              0              
+rho770_width              = 0.14845        -1             0              0              
+rho1450_mass              = 1.465          -1             0              0              
+rho1450_width             = 0.4            -1             0              0              
+rho1700_mass              = 1.72           -1             0              0              
+rho1700_width             = 0.25           -1             0              0              
+omega782_mass             = 0.78265        -1             0              0              
+omega782_width            = 0.00849        -1             0              0              
+rho1690_mass              = 1.6888         -1             0              0              
+rho1690_width             = 0.161          -1             0              0              

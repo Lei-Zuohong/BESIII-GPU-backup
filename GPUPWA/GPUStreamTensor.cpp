@@ -2,12 +2,9 @@
 #include <cassert>
 #include <iostream>
 
-//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
-//#define _CRT_SECURE_NO_DEPRECATE 1
 template <typename T, typename LT>
 GPUStreamTensor<T, LT>::GPUStreamTensor(GPUDataDependentObjectList *_list, bool init) : GPUTensor(GetRank()),
 																						GPUDataDependentObjectType<T>(_list, init)
-
 {
 }
 
@@ -20,7 +17,6 @@ GPUStreamTensor<T, LT>::GPUStreamTensor(GPUDataDependentObjectList *_list,
 																			  mtables(_tables),
 																			  mcolumns(_columns)
 {
-
 	assert(_list->GetNSets() == (int)_tables.size());
 	assert(_list->GetNSets() == (int)_columns.size());
 	for (int index = 0; index < _list->GetNSets(); index++)

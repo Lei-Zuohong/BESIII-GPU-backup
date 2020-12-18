@@ -1,0 +1,51 @@
+Fail: 
+Fail: 
+Fail: 
+Success: -4766.483873
+Success: -4648.463899
+Fail: 
+Success: -4845.323922
+Fail: 
+Success: -4766.465106
+Fail: 
+Success: -4973.120067
+Success: -4766.474988
+Fail: 
+Fail: 
+Success: -4651.247455
+Success: -4973.134091
+Fail: 
+Success: -4766.482943
+Success: -4766.483005
+Fail: 
+Success: -4973.140431
+Success: -4648.455739
+Fail: 
+Fail: 
+Success: -4651.23556
+Fail: 
+Fail: 
+Success: -4973.120335
+Success: -4683.588253
+Fail: 
+Success: -4766.467707
+Success: -4973.103479
+Success: -4766.477648
+Success: -4973.130788
+Success: -4648.458808
+Success: -4651.204982
+Success: -4973.142836
+Fail: 
+Success: -4648.440323
+Success: -4766.481632
+Success: -4973.039473
+Success: -4766.483449
+Success: -4845.316652
+Success: -4651.256814
+Success: -4646.868069
+Fail: 
+Success: -4766.474789
+Fail: 
+Fail: 
+Success: -4766.469177
+Best Likelihood: -4973.142836

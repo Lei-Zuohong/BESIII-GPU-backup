@@ -1,0 +1,6 @@
+# files.txt
+# Example configuration file for ConfigFile class
+ParameterFile = input_parameter.txt
+ResonanceFile = input_constant.txt
+DataFile = data/data.root
+MCFile1 = data/mc.root

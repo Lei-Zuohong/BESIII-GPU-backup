@@ -1,12 +1,3 @@
-/*
- * GPUMinimizationHistory.cpp
- *
- *   Created on: Dec 2, 2008
- *       Author: nberger
- * 	ReEdited on: Oct 22, 2020
- * 	     Editer: Zuohong Lei
- */
-
 #include "GPUMinimizationHistory.h"
 #include "GPUPartialWaveAnalysis.h"
 #include <iostream>

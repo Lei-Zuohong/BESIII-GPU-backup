@@ -1,11 +1,3 @@
-/// /file GPUMinimizationHistory.h
-/*
- * GPUMinimizationHistory.h
- *
- *  Created on: Dec 2, 2008
- *      Author: nberger
- */
-
 #ifndef GPUMINIMIZATIONHISTORY_H_
 #define GPUMINIMIZATIONHISTORY_H_
 

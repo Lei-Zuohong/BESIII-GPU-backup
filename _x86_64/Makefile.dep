@@ -1,0 +1,153 @@
+pipipi.o: /home/leizh/gpu/pipipi/pipipi.cpp \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUStreamTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/float44.h \
+ /usr/local/cuda-8.0/include/CL/cl.hpp \
+ /usr/local/cuda-8.0/include/CL/opencl.h \
+ /usr/local/cuda-8.0/include/CL/cl.h \
+ /usr/local/cuda-8.0/include/CL/cl_platform.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl.h \
+ /usr/local/cuda-8.0/include/CL/cl_gl_ext.h \
+ /usr/local/cuda-8.0/include/CL/cl_ext.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/float444.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/float4444.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUDataDependentObjectType.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUDataDependentObject.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUDataDependentObjectList.h \
+ /home/leizh/gpu/GPUPWA//Opencl_interface/DeviceInterface.h \
+ /home/leizh/gpu/GPUPWA//Opencl_interface/../Status.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUDataStream.h \
+ /home/leizh/gpu/GPUPWA//Opencl_interface/Stream.h \
+ /home/leizh/gpu/GPUPWA//Opencl_interface/../float44.h \
+ /home/leizh/gpu/GPUPWA//Opencl_interface/../float444.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUFileTable.h \
+ /home/leizh/gpu/GPUPWA//_common/Tensors.h /root534/include/TH1F.h \
+ /root534/include/TH1.h /root534/include/TAxis.h \
+ /root534/include/TNamed.h /root534/include/TObject.h \
+ /root534/include/Rtypes.h /root534/include/RConfig.h \
+ /root534/include/RVersion.h /root534/include/DllImport.h \
+ /root534/include/Rtypeinfo.h /root534/include/snprintf.h \
+ /root534/include/strlcpy.h /root534/include/TGenericClassInfo.h \
+ /root534/include/TSchemaHelper.h /root534/include/TStorage.h \
+ /root534/include/TVersionCheck.h /root534/include/Riosfwd.h \
+ /root534/include/TBuffer.h /root534/include/TString.h \
+ /root534/include/TMathBase.h /root534/include/TAttAxis.h \
+ /root534/include/TArrayD.h /root534/include/TArray.h \
+ /root534/include/TAttLine.h /root534/include/TAttFill.h \
+ /root534/include/TAttMarker.h /root534/include/TArrayC.h \
+ /root534/include/TArrayS.h /root534/include/TArrayI.h \
+ /root534/include/TArrayF.h /root534/include/Foption.h \
+ /root534/include/TVectorFfwd.h /root534/include/TVectorDfwd.h \
+ /root534/include/TFitResultPtr.h /root534/include/TH2F.h \
+ /root534/include/TH2.h /root534/include/TMatrixFBasefwd.h \
+ /root534/include/TMatrixDBasefwd.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUComputedTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUConstTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUComputedPropagator.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorType.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagator.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUParameterDependentObject.h \
+ /root534/include/Minuit2/MnUserParameters.h \
+ /root534/include/Minuit2/MnUserTransformation.h \
+ /root534/include/Minuit2/MnConfig.h /root534/include/Minuit2/MnMatrix.h \
+ /root534/include/Minuit2/LASymMatrix.h /root534/include/Minuit2/ABSum.h \
+ /root534/include/Minuit2/ABObj.h /root534/include/Minuit2/ABTypes.h \
+ /root534/include/Minuit2/VectorOuterProduct.h \
+ /root534/include/Minuit2/MatrixInverse.h \
+ /root534/include/Minuit2/StackAllocator.h \
+ /root534/include/Minuit2/LAVector.h /root534/include/Minuit2/ABProd.h \
+ /root534/include/Minuit2/LaInverse.h \
+ /root534/include/Minuit2/LaOuterProduct.h \
+ /root534/include/Minuit2/MinuitParameter.h \
+ /root534/include/Minuit2/MnMachinePrecision.h \
+ /root534/include/Minuit2/SinParameterTransformation.h \
+ /root534/include/Minuit2/SqrtLowParameterTransformation.h \
+ /root534/include/Minuit2/SqrtUpParameterTransformation.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUFactorizedPartialWave.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUComputedTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPartialWave.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUUnFactorizedPartialWave.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUMetricTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUMetricTensorCMS.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUAntisymmetricTensor.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUOrbitalTensors.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorBreitWigner.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorResolution.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUBasicPropagator.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorDerivative.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/ResCfg.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorFlatte2.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorSigma.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorMassDependentBreitWigner.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPartialWaveAnalysis.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPURuncounter.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUMinimizationHistory.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUSetOfPartialWaves.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/ParaCfg.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/ConfigFile.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPWAAmplitudeCalculator.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPWACalculator.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUStreamInputVector.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUStreamInputRootFileVector.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUStreamInputTextFileVector.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPlotset.h /root534/include/TGraph.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/ConfigFile.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUChi2FitConstraint.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUFitConstraint.h \
+ /home/leizh/gpu/pipipi/../GPUPWA/GPUPropagatorGS.h \
+ /root534/include/TFile.h /root534/include/TDirectoryFile.h \
+ /root534/include/TDirectory.h /root534/include/TList.h \
+ /root534/include/TSeqCollection.h /root534/include/TCollection.h \
+ /root534/include/TIterator.h /root534/include/TDatime.h \
+ /root534/include/TUUID.h /root534/include/TMap.h \
+ /root534/include/THashTable.h /root534/include/TUrl.h \
+ /root534/include/TRandom3.h /root534/include/TRandom.h \
+ /home/leizh/gpu/pipipi/headc/bes_gpu.h /root534/include/TMath.h \
+ /root534/include/TError.h /root534/include/RooStats/RooStatsUtils.h \
+ /root534/include/TTree.h /root534/include/TBranch.h \
+ /root534/include/TObjArray.h /root534/include/TDataType.h \
+ /root534/include/TDictionary.h /root534/include/Property.h \
+ /root534/include/ESTLType.h /root534/include/TClass.h \
+ /root534/include/TObjString.h /root534/include/ThreadLocalStorage.h \
+ /root534/include/RConfigure.h /root534/include/TVirtualTreePlayer.h \
+ /root534/include/Math/DistFuncMathCore.h \
+ /root534/include/Math/PdfFuncMathCore.h \
+ /root534/include/Math/ProbFuncMathCore.h \
+ /root534/include/Math/QuantFuncMathCore.h /root534/include/RooArgSet.h \
+ /root534/include/RooAbsCollection.h /root534/include/RooAbsArg.h \
+ /root534/include/THashList.h /root534/include/TRefArray.h \
+ /root534/include/TProcessID.h /root534/include/RooPrintable.h \
+ /root534/include/RooRefCountList.h /root534/include/RooLinkedList.h \
+ /root534/include/RooLinkedListElem.h /root534/include/RooHashTable.h \
+ /root534/include/RooAbsCache.h /root534/include/RooLinkedListIter.h \
+ /root534/include/RooNameReg.h /root534/include/RooCmdArg.h \
+ /root534/include/RooErrorHandler.h /root534/include/RooRealVar.h \
+ /root534/include/RooAbsRealLValue.h /root534/include/RooAbsReal.h \
+ /root534/include/RooCurve.h /root534/include/TGraph.h \
+ /root534/include/RooPlotable.h /root534/include/TMatrixDfwd.h \
+ /root534/include/RooArgSet.h /root534/include/RooArgList.h \
+ /root534/include/RooGlobalFunc.h /root534/include/RooNumber.h \
+ /root534/include/RooAbsLValue.h /root534/include/RooAbsBinning.h \
+ /root534/include/RooUniformBinning.h \
+ /root534/include/RooSharedPropertiesList.h \
+ /root534/include/RooSharedProperties.h \
+ /root534/include/RooRealVarSharedProperties.h \
+ /root534/include/RooAbsCollection.h /root534/include/TIterator.h \
+ /root534/include/RooStats/ModelConfig.h /root534/include/RooAbsPdf.h \
+ /root534/include/RooNameSet.h /root534/include/RooObjCacheManager.h \
+ /root534/include/RooNormSetCache.h /root534/include/RooAbsCacheElement.h \
+ /root534/include/RooCacheManager.h /root534/include/RooMsgService.h \
+ /root534/include/RooAbsData.h /root534/include/RooFormulaVar.h \
+ /root534/include/RooFormula.h /root534/include/TFormula.h \
+ /root534/include/TBits.h /root534/include/RooListProxy.h \
+ /root534/include/RooAbsProxy.h /root534/include/RooTrace.h \
+ /root534/include/TMatrixDSym.h /root534/include/TMatrixTSym.h \
+ /root534/include/TMatrixTBase.h /root534/include/TMatrixTUtils.h \
+ /root534/include/TMatrixDSymfwd.h /root534/include/TMatrixDUtils.h \
+ /root534/include/TMatrixDUtilsfwd.h /root534/include/RooWorkspace.h \
+ /root534/include/RooExpensiveObjectCache.h /root534/include/TRef.h \
+ /root534/include/RooProdPdf.h /root534/include/RooAbsPdf.h \
+ /root534/include/RooAICRegistry.h /root534/include/RooDataSet.h \
+ /root534/include/RooAbsData.h /root534/include/RooDirItem.h \
+ /home/leizh/gpu/pipipi/headc/bes_const.h \
+ /home/leizh/gpu/pipipi/headc/common.h

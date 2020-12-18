@@ -30,11 +30,9 @@ GPUPropagatorGS::GPUPropagatorGS(char *name,
 	mparnames[0] = p1;
 	mparnames[1] = p2;
 }
-
 GPUPropagatorGS::~GPUPropagatorGS(void)
 {
 }
-
 GPUDataStream<float2> *GPUPropagatorGS::operator()(int index, int block)
 {
 	assert(index < mx2.GetNStreams());

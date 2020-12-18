@@ -14,16 +14,7 @@ namespace Propagators_GPU{
 
 	 int prepare_kernels(const DeviceInterface * dev);
 
-	 extern cl::Kernel * k_kernelsumresolution;
-	 extern cl::Kernel * k_kernelcontractresolution;
-	 extern cl::Kernel * k_kernelbreitwignerRes;
-	 extern cl::Kernel * k_kernelmassdependentbreitwigner1Reskk;
-	 extern cl::Kernel * k_kernelbreitwigner;
-	 extern cl::Kernel * k_kernelgaussian;
-	 extern cl::Kernel * k_kerneldbreitwignerdmass;
-	 extern cl::Kernel * k_kerneldbreitwignerdwidth;
-	 extern cl::Kernel * k_kerneldbw2dmass;
-	 extern cl::Kernel * k_kerneldbw2dwidth;
+	 extern cl::Kernel * k_kernelGS;
 	 extern cl::Kernel * k_kernelmassdependentbreitwigner0;
 	 extern cl::Kernel * k_kernelmassdependentbreitwigner1;
 	 extern cl::Kernel * k_kernelmassdependentbreitwigner2;
@@ -44,11 +35,20 @@ namespace Propagators_GPU{
 	 extern cl::Kernel * k_kerneldmassdependentbreitwigner22dwidth;
 	 extern cl::Kernel * k_kerneldmassdependentbreitwigner23dwidth;
 	 extern cl::Kernel * k_kerneldmassdependentbreitwigner24dwidth;
+	 extern cl::Kernel * k_kernelsumresolution;
+	 extern cl::Kernel * k_kernelcontractresolution;
+	 extern cl::Kernel * k_kernelbreitwignerRes;
+	 extern cl::Kernel * k_kernelmassdependentbreitwigner1Reskk;
+	 extern cl::Kernel * k_kernelbreitwigner;
+	 extern cl::Kernel * k_kernelgaussian;
+	 extern cl::Kernel * k_kerneldbreitwignerdmass;
+	 extern cl::Kernel * k_kerneldbreitwignerdwidth;
+	 extern cl::Kernel * k_kerneldbw2dmass;
+	 extern cl::Kernel * k_kerneldbw2dwidth;
 	 extern cl::Kernel * k_kernelflatte2;
 	 extern cl::Kernel * k_kernelflatte3;
 	 extern cl::Kernel * k_kernelflatte4;
 	 extern cl::Kernel * k_kernelsigma;
-	 extern cl::Kernel * k_kernelGS;
 	 extern cl::Kernel * k_kernelfnscalarzou;
 	 extern cl::Kernel * k_kernelfnscalarcm2;
 	 extern cl::Kernel * k_kernelfnscalarcm;
@@ -56,25 +56,7 @@ namespace Propagators_GPU{
 	 extern cl::Kernel * k_kernel_a0980;
 	 extern cl::Kernel * k_kernelsumBW;
 	 extern cl::Kernel * k_kernelComBW;
-	 int kernelsumresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop, float weight, Stream<float2> * output);
-
-	 int kernelcontractresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop1, Stream<float2> * prop2, float weight, Stream<float2> * output);
-
-	 int kernelbreitwignerRes(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output);
-
-	 int kernelmassdependentbreitwigner1Reskk(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output);
-
-	 int kernelbreitwigner(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
-
-	 int kernelgaussian(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
-
-	 int kerneldbreitwignerdmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
-
-	 int kerneldbreitwignerdwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
-
-	 int kerneldbw2dmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output);
-
-	 int kerneldbw2dwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output);
+	 int kernelGS(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float wr, float m1_2, float m2_2, float r, int l, Stream<float2> * output);
 
 	 int kernelmassdependentbreitwigner0(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, float pmr, float m1_2, float m2_2, Stream<float2> * output);
 
@@ -116,6 +98,26 @@ namespace Propagators_GPU{
 
 	 int kerneldmassdependentbreitwigner24dwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float g, float pmr, float m1_2, float m2_2, Stream<float> * output);
 
+	 int kernelsumresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop, float weight, Stream<float2> * output);
+
+	 int kernelcontractresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop1, Stream<float2> * prop2, float weight, Stream<float2> * output);
+
+	 int kernelbreitwignerRes(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output);
+
+	 int kernelmassdependentbreitwigner1Reskk(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output);
+
+	 int kernelbreitwigner(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
+
+	 int kernelgaussian(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
+
+	 int kerneldbreitwignerdmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
+
+	 int kerneldbreitwignerdwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output);
+
+	 int kerneldbw2dmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output);
+
+	 int kerneldbw2dwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output);
+
 	 int kernelflatte2(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, Stream<float2> * output);
 
 	 int kernelflatte3(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, float g3, float m3a, float m3b, Stream<float2> * output);
@@ -123,8 +125,6 @@ namespace Propagators_GPU{
 	 int kernelflatte4(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, float g3, float m3a, float m3b, float g4, float m4a, float m4b, Stream<float2> * output);
 
 	 int kernelsigma(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float gf, Stream<float2> * output);
-
-	 int kernelGS(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float wr, float m1_2, float m2_2, float r, int l, Stream<float2> * output);
 
 	 int kernelfnscalarzou(const DeviceInterface * dev, Stream<float> * mx2in, uint n, Stream<float4> * par, float c, float cs, float2 d, float2 ds, float m1_2, float m2_2, Stream<float2> * output);
 

@@ -23,9 +23,9 @@
 #include "Summing_cpu.h"
 #include "Complex_cpu.h"
 
-
 // Prepare kernels for the CPU
-void PrepareKernels_CPU(const DeviceInterface * dev){
+void PrepareKernels_CPU(const DeviceInterface *dev)
+{
 	Analysis_CPU::prepare_kernels(dev);
 	Propagators_CPU::prepare_kernels(dev);
 	Tensors_CPU::prepare_kernels(dev);
@@ -35,12 +35,14 @@ void PrepareKernels_CPU(const DeviceInterface * dev){
 	Complex_CPU::prepare_kernels(dev);
 }
 #else
-void PrepareKernels_CPU(const DeviceInterface * dev){
+void PrepareKernels_CPU(const DeviceInterface *dev)
+{
 }
 #endif
 
 // Prepare kernels for the GPU
-void PrepareKernels_GPU(const DeviceInterface * dev){
+void PrepareKernels_GPU(const DeviceInterface *dev)
+{
 	//std::cout << "init begin" << std::endl;
 	Analysis_GPU::prepare_kernels(dev);
 	//std::cout << " 1 done " << std::endl;

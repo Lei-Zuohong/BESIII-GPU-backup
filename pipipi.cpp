@@ -23,13 +23,13 @@
 #include "../GPUPWA/ResCfg.h"
 #include "../GPUPWA/GPUChi2FitConstraint.h"
 #include "../GPUPWA/GPUPropagatorGS.h"
-#include <iomanip>
 #include "TFile.h"
 #include "TRandom3.h"
 #include "Minuit2/MnUserParameters.h"
 #include <ctime>
 #include <iomanip>
 #include <fstream>
+#include <iomanip>
 #include <string>
 
 #include "headc/bes_gpu.h"
@@ -208,9 +208,9 @@ int main(int argc, char *argv[])
 		GPUPropagatorMassDependentBreitWigner &propagator_rho1690_p = *new GPUPropagatorMassDependentBreitWigner((char *)"rho1690", pipz_m2, 3, mpip, mpiz);
 		GPUPropagatorMassDependentBreitWigner &propagator_rho1690_m = *new GPUPropagatorMassDependentBreitWigner((char *)"rho1690", pimz_m2, 3, mpim, mpiz);
 		GPUPropagatorMassDependentBreitWigner &propagator_rho1690_z = *new GPUPropagatorMassDependentBreitWigner((char *)"rho1690", pipm_m2, 3, mpip, mpim);
-		GPUVectorPropagator &amp_rho1690pi_p = (e_ijkl | pipipi) | (t3_rhop_pip_piz || t3_all_rhop_pim) * propagator_rho1690_p;
-		GPUVectorPropagator &amp_rho1690pi_m = (e_ijkl | pipipi) | (t3_rhom_pim_piz || t3_all_rhom_pip) * propagator_rho1690_m;
-		GPUVectorPropagator &amp_rho1690pi_z = (e_ijkl | pipipi) | (t3_rhoz_pip_pim || t3_all_rhoz_piz) * propagator_rho1690_z;
+		GPUVectorPropagator &amp_rho1690pi_p = (e_ijkl | pipipi) | (t3_all_rhop_pim || t3_rhop_pip_piz) * propagator_rho1690_p;
+		GPUVectorPropagator &amp_rho1690pi_m = (e_ijkl | pipipi) | (t3_all_rhom_pip || t3_rhom_pim_piz) * propagator_rho1690_m;
+		GPUVectorPropagator &amp_rho1690pi_z = (e_ijkl | pipipi) | (t3_all_rhoz_piz || t3_rhoz_pip_pim) * propagator_rho1690_z;
 		GPUVectorPropagator &amp_rho1690pi = amp_rho1690pi_z - amp_rho1690pi_p + amp_rho1690pi_m;
 		GPUUnFactorizedVectorPartialWave &wave_rho1690pi = *new GPUUnFactorizedVectorPartialWave(amp_rho1690pi, (char *)"wave_rho1690pi");
 		my_pwa->GetWaves()->AddPartialWave(wave_rho1690pi);
@@ -220,9 +220,9 @@ int main(int argc, char *argv[])
 		GPUPropagatorMassDependentBreitWigner &propagator_rho3unknown_p = *new GPUPropagatorMassDependentBreitWigner((char *)"rho3unknown", pipz_m2, 3, mpip, mpiz);
 		GPUPropagatorMassDependentBreitWigner &propagator_rho3unknown_m = *new GPUPropagatorMassDependentBreitWigner((char *)"rho3unknown", pimz_m2, 3, mpim, mpiz);
 		GPUPropagatorMassDependentBreitWigner &propagator_rho3unknown_z = *new GPUPropagatorMassDependentBreitWigner((char *)"rho3unknown", pipm_m2, 3, mpip, mpim);
-		GPUVectorPropagator &amp_rho3unknownpi_p = (e_ijkl | pipipi) | (t3_rhop_pip_piz || t3_all_rhop_pim) * propagator_rho3unknown_p;
-		GPUVectorPropagator &amp_rho3unknownpi_m = (e_ijkl | pipipi) | (t3_rhom_pim_piz || t3_all_rhom_pip) * propagator_rho3unknown_m;
-		GPUVectorPropagator &amp_rho3unknownpi_z = (e_ijkl | pipipi) | (t3_rhoz_pip_pim || t3_all_rhoz_piz) * propagator_rho3unknown_z;
+		GPUVectorPropagator &amp_rho3unknownpi_p = (e_ijkl | pipipi) | (t3_all_rhop_pim || t3_rhop_pip_piz) * propagator_rho3unknown_p;
+		GPUVectorPropagator &amp_rho3unknownpi_m = (e_ijkl | pipipi) | (t3_all_rhom_pip || t3_rhom_pim_piz) * propagator_rho3unknown_m;
+		GPUVectorPropagator &amp_rho3unknownpi_z = (e_ijkl | pipipi) | (t3_all_rhoz_piz || t3_rhoz_pip_pim) * propagator_rho3unknown_z;
 		GPUVectorPropagator &amp_rho3unknownpi = amp_rho3unknownpi_z - amp_rho3unknownpi_p + amp_rho3unknownpi_m;
 		GPUUnFactorizedVectorPartialWave &wave_rho3unknownpi = *new GPUUnFactorizedVectorPartialWave(amp_rho3unknownpi, (char *)"wave_rho3unknownpi");
 		my_pwa->GetWaves()->AddPartialWave(wave_rho3unknownpi);
@@ -230,14 +230,14 @@ int main(int argc, char *argv[])
 	if (int(myoption_value.get_value("add_omega1670pi")) == 1)
 	{
 		GPUPropagatorMassDependentBreitWigner &propagator_omega1670 = *new GPUPropagatorMassDependentBreitWigner((char *)"omega1670", pipm_m2, 3, mpip, mpim);
-		GPUVectorPropagator &amp_omega1670pi = (e_ijkl | pipipi) | (t3_rhoz_pip_pim || t3_all_rhoz_piz) * propagator_omega1670;
+		GPUVectorPropagator &amp_omega1670pi = (e_ijkl | pipipi) | (t3_all_rhoz_piz || t3_rhoz_pip_pim) * propagator_omega1670;
 		GPUUnFactorizedVectorPartialWave &wave_omega1670pi = *new GPUUnFactorizedVectorPartialWave(amp_omega1670pi, (char *)"wave_omega1670pi");
 		my_pwa->GetWaves()->AddPartialWave(wave_omega1670pi);
 	}
 	if (int(myoption_value.get_value("add_omega3unknownpi")) == 1)
 	{
 		GPUPropagatorMassDependentBreitWigner &propagator_omega3unknown = *new GPUPropagatorMassDependentBreitWigner((char *)"omega3unknown", pipm_m2, 3, mpip, mpim);
-		GPUVectorPropagator &amp_omega3unknownpi = (e_ijkl | pipipi) | (t3_rhoz_pip_pim || t3_all_rhoz_piz) * propagator_omega3unknown;
+		GPUVectorPropagator &amp_omega3unknownpi = (e_ijkl | pipipi) | (t3_all_rhoz_piz || t3_rhoz_pip_pim) * propagator_omega3unknown;
 		GPUUnFactorizedVectorPartialWave &wave_omega3unknownpi = *new GPUUnFactorizedVectorPartialWave(amp_omega3unknownpi, (char *)"wave_omega3unknownpi");
 		my_pwa->GetWaves()->AddPartialWave(wave_omega3unknownpi);
 	}
@@ -262,12 +262,15 @@ int main(int argc, char *argv[])
 						   int(myoption_value.get_value("strategy_spread")));
 	}
 	my_pwa->InitCalculator();
-	double **ptx = my_pwa->GetPartialTotalXSection();
-	char output_fraction[255];
-	sprintf(output_fraction, "output_fraction.txt");
-	ofstream output_fraction_file(output_fraction);
-	bes_gpu::fraction_to_txt(ptx, number_waves, output_fraction_file);
-	output_fraction_file.close();
+	if (myoption_value.get_value("do_output_fraction") == 1)
+	{
+		double **ptx = my_pwa->GetPartialTotalXSection();
+		char output_fraction[255];
+		sprintf(output_fraction, "output_fraction.txt");
+		ofstream output_fraction_file(output_fraction);
+		bes_gpu::fraction_to_txt(ptx, number_waves, output_fraction_file);
+		output_fraction_file.close();
+	}
 	if (myoption_value.get_value("do_output_amplitude") == 1)
 	{
 		my_pwa->GetAmplitudes((char *)"output_amplitude_data.txt",

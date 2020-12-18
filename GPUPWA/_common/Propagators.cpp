@@ -11,16 +11,7 @@
 
 namespace Propagators_GPU{
 
-	 cl::Kernel * k_kernelsumresolution = 0;
-	 cl::Kernel * k_kernelcontractresolution = 0;
-	 cl::Kernel * k_kernelbreitwignerRes = 0;
-	 cl::Kernel * k_kernelmassdependentbreitwigner1Reskk = 0;
-	 cl::Kernel * k_kernelbreitwigner = 0;
-	 cl::Kernel * k_kernelgaussian = 0;
-	 cl::Kernel * k_kerneldbreitwignerdmass = 0;
-	 cl::Kernel * k_kerneldbreitwignerdwidth = 0;
-	 cl::Kernel * k_kerneldbw2dmass = 0;
-	 cl::Kernel * k_kerneldbw2dwidth = 0;
+	 cl::Kernel * k_kernelGS = 0;
 	 cl::Kernel * k_kernelmassdependentbreitwigner0 = 0;
 	 cl::Kernel * k_kernelmassdependentbreitwigner1 = 0;
 	 cl::Kernel * k_kernelmassdependentbreitwigner2 = 0;
@@ -41,11 +32,20 @@ namespace Propagators_GPU{
 	 cl::Kernel * k_kerneldmassdependentbreitwigner22dwidth = 0;
 	 cl::Kernel * k_kerneldmassdependentbreitwigner23dwidth = 0;
 	 cl::Kernel * k_kerneldmassdependentbreitwigner24dwidth = 0;
+	 cl::Kernel * k_kernelsumresolution = 0;
+	 cl::Kernel * k_kernelcontractresolution = 0;
+	 cl::Kernel * k_kernelbreitwignerRes = 0;
+	 cl::Kernel * k_kernelmassdependentbreitwigner1Reskk = 0;
+	 cl::Kernel * k_kernelbreitwigner = 0;
+	 cl::Kernel * k_kernelgaussian = 0;
+	 cl::Kernel * k_kerneldbreitwignerdmass = 0;
+	 cl::Kernel * k_kerneldbreitwignerdwidth = 0;
+	 cl::Kernel * k_kerneldbw2dmass = 0;
+	 cl::Kernel * k_kerneldbw2dwidth = 0;
 	 cl::Kernel * k_kernelflatte2 = 0;
 	 cl::Kernel * k_kernelflatte3 = 0;
 	 cl::Kernel * k_kernelflatte4 = 0;
 	 cl::Kernel * k_kernelsigma = 0;
-	 cl::Kernel * k_kernelGS = 0;
 	 cl::Kernel * k_kernelfnscalarzou = 0;
 	 cl::Kernel * k_kernelfnscalarcm2 = 0;
 	 cl::Kernel * k_kernelfnscalarcm = 0;
@@ -87,63 +87,9 @@ namespace Propagators_GPU{
 		 	return FAILURE;
 		 }
 
-		 k_kernelsumresolution = new cl::Kernel(*bProgram, "kernelsumresolution", &err);
+		 k_kernelGS = new cl::Kernel(*bProgram, "kernelGS", &err);
 		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelsumresolution\n";
-			 return FAILURE;
-		 }
-
-		 k_kernelcontractresolution = new cl::Kernel(*bProgram, "kernelcontractresolution", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelcontractresolution\n";
-			 return FAILURE;
-		 }
-
-		 k_kernelbreitwignerRes = new cl::Kernel(*bProgram, "kernelbreitwignerRes", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelbreitwignerRes\n";
-			 return FAILURE;
-		 }
-
-		 k_kernelmassdependentbreitwigner1Reskk = new cl::Kernel(*bProgram, "kernelmassdependentbreitwigner1Reskk", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelmassdependentbreitwigner1Reskk\n";
-			 return FAILURE;
-		 }
-
-		 k_kernelbreitwigner = new cl::Kernel(*bProgram, "kernelbreitwigner", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelbreitwigner\n";
-			 return FAILURE;
-		 }
-
-		 k_kernelgaussian = new cl::Kernel(*bProgram, "kernelgaussian", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelgaussian\n";
-			 return FAILURE;
-		 }
-
-		 k_kerneldbreitwignerdmass = new cl::Kernel(*bProgram, "kerneldbreitwignerdmass", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbreitwignerdmass\n";
-			 return FAILURE;
-		 }
-
-		 k_kerneldbreitwignerdwidth = new cl::Kernel(*bProgram, "kerneldbreitwignerdwidth", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbreitwignerdwidth\n";
-			 return FAILURE;
-		 }
-
-		 k_kerneldbw2dmass = new cl::Kernel(*bProgram, "kerneldbw2dmass", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbw2dmass\n";
-			 return FAILURE;
-		 }
-
-		 k_kerneldbw2dwidth = new cl::Kernel(*bProgram, "kerneldbw2dwidth", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbw2dwidth\n";
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelGS\n";
 			 return FAILURE;
 		 }
 
@@ -267,6 +213,66 @@ namespace Propagators_GPU{
 			 return FAILURE;
 		 }
 
+		 k_kernelsumresolution = new cl::Kernel(*bProgram, "kernelsumresolution", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelsumresolution\n";
+			 return FAILURE;
+		 }
+
+		 k_kernelcontractresolution = new cl::Kernel(*bProgram, "kernelcontractresolution", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelcontractresolution\n";
+			 return FAILURE;
+		 }
+
+		 k_kernelbreitwignerRes = new cl::Kernel(*bProgram, "kernelbreitwignerRes", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelbreitwignerRes\n";
+			 return FAILURE;
+		 }
+
+		 k_kernelmassdependentbreitwigner1Reskk = new cl::Kernel(*bProgram, "kernelmassdependentbreitwigner1Reskk", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelmassdependentbreitwigner1Reskk\n";
+			 return FAILURE;
+		 }
+
+		 k_kernelbreitwigner = new cl::Kernel(*bProgram, "kernelbreitwigner", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelbreitwigner\n";
+			 return FAILURE;
+		 }
+
+		 k_kernelgaussian = new cl::Kernel(*bProgram, "kernelgaussian", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelgaussian\n";
+			 return FAILURE;
+		 }
+
+		 k_kerneldbreitwignerdmass = new cl::Kernel(*bProgram, "kerneldbreitwignerdmass", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbreitwignerdmass\n";
+			 return FAILURE;
+		 }
+
+		 k_kerneldbreitwignerdwidth = new cl::Kernel(*bProgram, "kerneldbreitwignerdwidth", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbreitwignerdwidth\n";
+			 return FAILURE;
+		 }
+
+		 k_kerneldbw2dmass = new cl::Kernel(*bProgram, "kerneldbw2dmass", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbw2dmass\n";
+			 return FAILURE;
+		 }
+
+		 k_kerneldbw2dwidth = new cl::Kernel(*bProgram, "kerneldbw2dwidth", &err);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kerneldbw2dwidth\n";
+			 return FAILURE;
+		 }
+
 		 k_kernelflatte2 = new cl::Kernel(*bProgram, "kernelflatte2", &err);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelflatte2\n";
@@ -288,12 +294,6 @@ namespace Propagators_GPU{
 		 k_kernelsigma = new cl::Kernel(*bProgram, "kernelsigma", &err);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelsigma\n";
-			 return FAILURE;
-		 }
-
-		 k_kernelGS = new cl::Kernel(*bProgram, "kernelGS", &err);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel::Kernel() failed (" << err << ") for kernel kernelGS\n";
 			 return FAILURE;
 		 }
 
@@ -344,553 +344,70 @@ namespace Propagators_GPU{
 
 
 
-	 int kernelsumresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop, float weight, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 err = k_kernelsumresolution->setArg(0, tag);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 evvec->push_back((prop->GetEvent()));
-		 err = k_kernelsumresolution->setArg(1, *(*prop)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelsumresolution->setArg(2, weight);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelsumresolution->setArg(3, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelsumresolution, cl::NullRange, cl::NDRange(prop->GetD1(),prop->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kernelcontractresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop1, Stream<float2> * prop2, float weight, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 err = k_kernelcontractresolution->setArg(0, tag);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 evvec->push_back((prop1->GetEvent()));
-		 err = k_kernelcontractresolution->setArg(1, *(*prop1)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		if(prop2 != prop1)
-			 evvec->push_back((prop2->GetEvent()));
-		 err = k_kernelcontractresolution->setArg(2, *(*prop2)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelcontractresolution->setArg(3, weight);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelcontractresolution->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelcontractresolution, cl::NullRange, cl::NDRange(prop1->GetD1(),prop1->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kernelbreitwignerRes(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output){
+	 int kernelGS(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float wr, float m1_2, float m2_2, float r, int l, Stream<float2> * output){
 
 		 cl_int err;
 		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
 		 cl::Event event = cl::Event();
 
 		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kernelbreitwignerRes->setArg(0, *(*mx2in)());
+		 err = k_kernelGS->setArg(0, *(*mx2in)());
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelbreitwignerRes->setArg(1, shift);
+		 err = k_kernelGS->setArg(1, mr);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelbreitwignerRes->setArg(2, mr);
+		 err = k_kernelGS->setArg(2, wr);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelbreitwignerRes->setArg(3, mr2);
+		 err = k_kernelGS->setArg(3, m1_2);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelbreitwignerRes->setArg(4, wr);
+		 err = k_kernelGS->setArg(4, m2_2);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelbreitwignerRes->setArg(5, *(*output)());
+		 err = k_kernelGS->setArg(5, r);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelbreitwignerRes, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kernelmassdependentbreitwigner1Reskk(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(0, *(*mx2in)());
+		 err = k_kernelGS->setArg(6, l);
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(1, shift);
+		 err = k_kernelGS->setArg(7, *(*output)());
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
 			 assert(0);
 			 return FAILURE;
 		 }
 
-		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(2, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(3, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(4, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(5, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelmassdependentbreitwigner1Reskk, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kernelbreitwigner(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kernelbreitwigner->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelbreitwigner->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelbreitwigner->setArg(2, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelbreitwigner->setArg(3, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelbreitwigner->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelbreitwigner, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kernelgaussian(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kernelgaussian->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelgaussian->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelgaussian->setArg(2, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelgaussian->setArg(3, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelgaussian->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelgaussian, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kerneldbreitwignerdmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kerneldbreitwignerdmass->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdmass->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdmass->setArg(2, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdmass->setArg(3, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdmass->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbreitwignerdmass, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kerneldbreitwignerdwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kerneldbreitwignerdwidth->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdwidth->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdwidth->setArg(2, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdwidth->setArg(3, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbreitwignerdwidth->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbreitwignerdwidth, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kerneldbw2dmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kerneldbw2dmass->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dmass->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dmass->setArg(2, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dmass->setArg(3, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dmass->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbw2dmass, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kerneldbw2dwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kerneldbw2dwidth->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dwidth->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dwidth->setArg(2, mr2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dwidth->setArg(3, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kerneldbw2dwidth->setArg(4, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbw2dwidth, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelGS, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
 			 assert(0);
@@ -2423,6 +1940,565 @@ namespace Propagators_GPU{
 	 return 0;
 	 }
 
+	 int kernelsumresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop, float weight, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 err = k_kernelsumresolution->setArg(0, tag);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 evvec->push_back((prop->GetEvent()));
+		 err = k_kernelsumresolution->setArg(1, *(*prop)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelsumresolution->setArg(2, weight);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelsumresolution->setArg(3, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelsumresolution, cl::NullRange, cl::NDRange(prop->GetD1(),prop->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kernelcontractresolution(const DeviceInterface * dev, float tag, Stream<float2> * prop1, Stream<float2> * prop2, float weight, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 err = k_kernelcontractresolution->setArg(0, tag);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 evvec->push_back((prop1->GetEvent()));
+		 err = k_kernelcontractresolution->setArg(1, *(*prop1)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		if(prop2 != prop1)
+			 evvec->push_back((prop2->GetEvent()));
+		 err = k_kernelcontractresolution->setArg(2, *(*prop2)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelcontractresolution->setArg(3, weight);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelcontractresolution->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelcontractresolution, cl::NullRange, cl::NDRange(prop1->GetD1(),prop1->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kernelbreitwignerRes(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kernelbreitwignerRes->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwignerRes->setArg(1, shift);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwignerRes->setArg(2, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwignerRes->setArg(3, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwignerRes->setArg(4, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwignerRes->setArg(5, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelbreitwignerRes, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kernelmassdependentbreitwigner1Reskk(const DeviceInterface * dev, Stream<float> * mx2in, float shift, float mr, float mr2, float wr, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(1, shift);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(2, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(3, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(4, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelmassdependentbreitwigner1Reskk->setArg(5, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelmassdependentbreitwigner1Reskk, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kernelbreitwigner(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kernelbreitwigner->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwigner->setArg(1, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwigner->setArg(2, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwigner->setArg(3, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelbreitwigner->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelbreitwigner, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kernelgaussian(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kernelgaussian->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelgaussian->setArg(1, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelgaussian->setArg(2, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelgaussian->setArg(3, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kernelgaussian->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelgaussian, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kerneldbreitwignerdmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kerneldbreitwignerdmass->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdmass->setArg(1, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdmass->setArg(2, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdmass->setArg(3, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdmass->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbreitwignerdmass, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kerneldbreitwignerdwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float2> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kerneldbreitwignerdwidth->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdwidth->setArg(1, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdwidth->setArg(2, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdwidth->setArg(3, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbreitwignerdwidth->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbreitwignerdwidth, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kerneldbw2dmass(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kerneldbw2dmass->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dmass->setArg(1, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dmass->setArg(2, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dmass->setArg(3, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dmass->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbw2dmass, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
+	 int kerneldbw2dwidth(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float wr, Stream<float> * output){
+
+		 cl_int err;
+		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
+		 cl::Event event = cl::Event();
+
+		 evvec->push_back((mx2in->GetEvent()));
+		 err = k_kerneldbw2dwidth->setArg(0, *(*mx2in)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dwidth->setArg(1, mr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dwidth->setArg(2, mr2);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dwidth->setArg(3, wr);
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = k_kerneldbw2dwidth->setArg(4, *(*output)());
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kerneldbw2dwidth, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
+		 if (err != CL_SUCCESS) {
+			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
+			 assert(0);
+			 return FAILURE;
+		 }
+
+		 output->SetEvent(event);
+
+		 delete evvec;
+	 return 0;
+	 }
+
 	 int kernelflatte2(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float mr2, float g1, float m1a, float m1b, float g2, float m2a, float m2b, Stream<float2> * output){
 
 		 cl_int err;
@@ -2792,82 +2868,6 @@ namespace Propagators_GPU{
 		 }
 
 		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelsigma, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 output->SetEvent(event);
-
-		 delete evvec;
-	 return 0;
-	 }
-
-	 int kernelGS(const DeviceInterface * dev, Stream<float> * mx2in, float mr, float wr, float m1_2, float m2_2, float r, int l, Stream<float2> * output){
-
-		 cl_int err;
-		 std::vector<cl::Event> *evvec = new std::vector<cl::Event>();
-		 cl::Event event = cl::Event();
-
-		 evvec->push_back((mx2in->GetEvent()));
-		 err = k_kernelGS->setArg(0, *(*mx2in)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(1, mr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(2, wr);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(3, m1_2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(4, m2_2);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(5, r);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(6, l);
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = k_kernelGS->setArg(7, *(*output)());
-		 if (err != CL_SUCCESS) {
-			 std::cerr << "Kernel.SetArg() failed (" << err << ")\n";
-			 assert(0);
-			 return FAILURE;
-		 }
-
-		 err = dev->GetQueue()->enqueueNDRangeKernel(*k_kernelGS, cl::NullRange, cl::NDRange(mx2in->GetD1(),mx2in->GetD2()), cl::NullRange, evvec, &event );
 		 if (err != CL_SUCCESS) {
 			 std::cerr << "CommandQueue::enqueueNDRangeKernel() failed (" << err << ")\n";
 			 assert(0);
